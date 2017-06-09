@@ -96,8 +96,13 @@ public class BrushDrawingView extends View {
         refreshBrushDrawing();
     }
 
-    public void setBrushEraserSize(float brushEraserSize) {
+    void setBrushEraserSize(float brushEraserSize) {
         this.brushEraserSize = brushEraserSize;
+    }
+
+    void setBrushEraserColor(@ColorInt int color){
+        drawPaint.setColor(color);
+        refreshBrushDrawing();
     }
 
     float getEraserSize() {

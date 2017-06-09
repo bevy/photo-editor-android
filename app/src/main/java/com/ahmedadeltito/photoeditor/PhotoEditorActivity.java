@@ -119,11 +119,11 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         indicator.setViewPager(pager);
 
         photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(PhotoEditorActivity.this)
-                .parentView(parentImageRelativeLayout)
-                .childView(photoEditImageView)
-                .deleteView(deleteRelativeLayout)
-                .brushDrawingView(brushDrawingView)
-                .buildPhotoEditorSDK();
+                .parentView(parentImageRelativeLayout) // add parent image view
+                .childView(photoEditImageView) // add the desired image view
+                .deleteView(deleteRelativeLayout) // add the deleted view that will appear during the movement of the views
+                .brushDrawingView(brushDrawingView) // add the brush drawing view that is responsible for drawing on the image view
+                .buildPhotoEditorSDK(); // build photo editor sdk
         photoEditorSDK.setOnPhotoEditorSDKListener(this);
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

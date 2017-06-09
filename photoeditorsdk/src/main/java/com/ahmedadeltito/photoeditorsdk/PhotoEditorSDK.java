@@ -119,6 +119,16 @@ public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
             brushDrawingView.setBrushColor(color);
     }
 
+    public void setBrushEraserSize(float brushEraserSize) {
+        if (brushDrawingView != null)
+            brushDrawingView.setBrushEraserSize(brushEraserSize);
+    }
+
+    public void setBrushEraserColor(@ColorInt int color) {
+        if (brushDrawingView != null)
+            brushDrawingView.setBrushEraserColor(color);
+    }
+
     public float getEraserSize() {
         if (brushDrawingView != null)
             return brushDrawingView.getEraserSize();
