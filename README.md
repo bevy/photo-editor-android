@@ -23,7 +23,7 @@ Photo Editor SDK that contains a lot of features to edit, scale, rotate and draw
 1. First of all you have to get instance of PhotoEditorSDK to initialize it and start calling the desired functions.
 ```java
 photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(PhotoEditorActivity.this)
-//add parent image view
+//add the parent image view
 .parentView(parentImageRelativeLayout)
 //add the desired image view
 .childView(photoEditImageView)
@@ -37,55 +37,59 @@ photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(PhotoEditorActivity.th
 
 2. To add **Text** on the image:
 ```java
-photoEditorSDK.addText(text, colorCodeTextView);
+photoEditorSDK.addText(String text, int colorCodeTextView);
 ```
 
 3. To add **Image** or **Stickers**:
 ```java
-photoEditorSDK.addImage(image);
+photoEditorSDK.addImage(Bitmap desiredImage);
 ```
 
 4. To add **Emoji**:
 ```java
-photoEditorSDK.addEmoji(emojiName, emojiFont);
+photoEditorSDK.addEmoji(String emojiName, Typeface emojiFont);
 ```
 
 5. To **Draw** on the image:
 ```java
-photoEditorSDK.setBrushDrawingMode(brushDrawingMode);
+photoEditorSDK.setBrushDrawingMode(boolean brushDrawingMode);
 // brushDrawingMode is false by default, true if you want to draw on the image view
 ```
 
-6. To change the **Color** and **Size** of the drawing view and the **Size** and the **Color** of the **Eraser** view:
+6. To change the **Color** and **Size** of the drawing view.
 ```java
-photoEditorSDK.setBrushSize(size);
-photoEditorSDK.setBrushColor(colorCode);
-photoEditorSDK.brushEraser();
-photoEditorSDK.setBrushEraserSize(brushEraserSize);
-photoEditorSDK.setBrushEraserColor(color);
+photoEditorSDK.setBrushSize(int size);
+photoEditorSDK.setBrushColor(int colorCode);
 ```
 
-7. To **Save** the image after editing:
+7. To apply **The Eraser** option, change its **Size** and the **Color** of it:
+```java
+photoEditorSDK.brushEraser();
+photoEditorSDK.setBrushEraserSize(float brushEraserSize);
+photoEditorSDK.setBrushEraserColor(int color);
+```
+
+8. To **Save** the image after editing:
 ```java
 photoEditorSDK.saveImage(folderName, imageName);
 ```
 
-8. To **Undo** the added **Views (Image or Text)**:
+9. To **Undo** the added **Views (Image or Text)**:
 ```java
 photoEditorSDK.viewUndo();
 ```
 
-9. To **Clear All** the added **Views (Image or Text)**:
+10. To **Clear All** the added **Views (Image or Text)**:
 ```java
 photoEditorSDK.clearAllViews();
 ```
 
-10. To **Clear All** the added **Drawing Views**:
+11. To **Clear All** the added **Drawing Views**:
 ```java
 photoEditorSDK.clearBrushAllViews();
 ```
 
-11. To listen on **Added Views**, **Edit the added Text Views**, **Added and Removed Views** and **Start and Stop Moving Views**. You can implement:
+12. To listen on **Added Views**, **Edit the added Text Views**, **Added and Removed Views** and **Start and Stop Moving Views**. You can implement:
 ```java
 photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
     @Override
