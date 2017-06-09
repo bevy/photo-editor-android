@@ -23,7 +23,7 @@ import java.util.List;
  * Created by Ahmed Adel on 02/06/2017.
  */
 
-public class PhotoEditorSDK {
+public class PhotoEditorSDK implements MultiTouchListener.OnMultiTouchListener {
 
     private Context context;
     private RelativeLayout parentView;
@@ -32,6 +32,7 @@ public class PhotoEditorSDK {
     private BrushDrawingView brushDrawingView;
     private List<View> addedViews;
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
+    private View addTextRootView;
 
     private PhotoEditorSDK(PhotoEditorSDKBuilder photoEditorSDKBuilder) {
         this.context = photoEditorSDKBuilder.context;
@@ -49,18 +50,22 @@ public class PhotoEditorSDK {
         imageView.setImageBitmap(desiredImage);
         imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT));
-        imageRootView.setOnTouchListener((new MultiTouchListener(deleteView,
-                parentView, this.imageView, onPhotoEditorSDKListener)));
+        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
+                parentView, this.imageView, onPhotoEditorSDKListener);
+        multiTouchListener.setOnMultiTouchListener(this);
+        imageRootView.setOnTouchListener(multiTouchListener);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(imageRootView, params);
         addedViews.add(imageRootView);
+        if (onPhotoEditorSDKListener != null)
+            onPhotoEditorSDKListener.onAddViewListener(ViewType.IMAGE, addedViews.size());
     }
 
     public void addText(String text, int colorCodeTextView) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
+        addTextRootView = inflater.inflate(R.layout.photo_editor_sdk_text_item_list, null);
         TextView addTextView = (TextView) addTextRootView.findViewById(R.id.photo_editor_sdk_text_tv);
         addTextView.setGravity(Gravity.CENTER);
         addTextView.setText(text);
@@ -68,19 +73,15 @@ public class PhotoEditorSDK {
             addTextView.setTextColor(colorCodeTextView);
         MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
                 parentView, this.imageView, onPhotoEditorSDKListener);
-        multiTouchListener.setOnEditTextClickListener(new MultiTouchListener.OnEditTextClickListener() {
-            @Override
-            public void onEditTextClickListener(String text, int colorCode) {
-                parentView.removeView(addTextRootView);
-                addedViews.remove(addTextRootView);
-            }
-        });
+        multiTouchListener.setOnMultiTouchListener(this);
         addTextRootView.setOnTouchListener(multiTouchListener);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(addTextRootView, params);
         addedViews.add(addTextRootView);
+        if (onPhotoEditorSDKListener != null)
+            onPhotoEditorSDKListener.onAddViewListener(ViewType.TEXT, addedViews.size());
     }
 
     public void addEmoji(String emojiName, Typeface emojiFont) {
@@ -90,13 +91,17 @@ public class PhotoEditorSDK {
         emojiTextView.setTypeface(emojiFont);
         emojiTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         emojiTextView.setText(convertEmoji(emojiName));
-        emojiRootView.setOnTouchListener((new MultiTouchListener(deleteView,
-                parentView, this.imageView, onPhotoEditorSDKListener)));
+        MultiTouchListener multiTouchListener = new MultiTouchListener(deleteView,
+                parentView, this.imageView, onPhotoEditorSDKListener);
+        multiTouchListener.setOnMultiTouchListener(this);
+        emojiRootView.setOnTouchListener(multiTouchListener);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentView.addView(emojiRootView, params);
         addedViews.add(emojiRootView);
+        if (onPhotoEditorSDKListener != null)
+            onPhotoEditorSDKListener.onAddViewListener(ViewType.EMOJI, addedViews.size());
     }
 
     public void setBrushDrawingMode(boolean brushDrawingMode) {
@@ -120,9 +125,9 @@ public class PhotoEditorSDK {
         return 0;
     }
 
-    public float getPenSize() {
+    public float getBrushSize() {
         if (brushDrawingView != null)
-            return brushDrawingView.getPenSize();
+            return brushDrawingView.getBrushSize();
         return 0;
     }
 
@@ -130,11 +135,6 @@ public class PhotoEditorSDK {
         if (brushDrawingView != null)
             return brushDrawingView.getBrushColor();
         return 0;
-    }
-
-    public void brushUndo() {
-        if (brushDrawingView != null)
-            brushDrawingView.brushUndo();
     }
 
     public void brushEraser() {
@@ -145,6 +145,19 @@ public class PhotoEditorSDK {
     public void viewUndo() {
         if (addedViews.size() > 0) {
             parentView.removeView(addedViews.remove(addedViews.size() - 1));
+            if (onPhotoEditorSDKListener != null)
+                onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+        }
+    }
+
+    private void viewUndo(View removedView) {
+        if (addedViews.size() > 0) {
+            if (addedViews.contains(removedView)) {
+                parentView.removeView(removedView);
+                addedViews.remove(removedView);
+                if (onPhotoEditorSDKListener != null)
+                    onPhotoEditorSDKListener.onRemoveViewListener(addedViews.size());
+            }
         }
     }
 
@@ -214,6 +227,19 @@ public class PhotoEditorSDK {
     public void setOnPhotoEditorSDKListener(OnPhotoEditorSDKListener onPhotoEditorSDKListener) {
         this.onPhotoEditorSDKListener = onPhotoEditorSDKListener;
         brushDrawingView.setOnPhotoEditorSDKListener(onPhotoEditorSDKListener);
+    }
+
+    @Override
+    public void onEditTextClickListener(String text, int colorCode) {
+        if (addTextRootView != null) {
+            parentView.removeView(addTextRootView);
+            addedViews.remove(addTextRootView);
+        }
+    }
+
+    @Override
+    public void onRemoveViewListener(View removedView) {
+        viewUndo(removedView);
     }
 
     public static class PhotoEditorSDKBuilder {

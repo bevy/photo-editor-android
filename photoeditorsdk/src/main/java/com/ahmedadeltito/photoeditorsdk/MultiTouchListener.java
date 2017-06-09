@@ -1,7 +1,6 @@
 package com.ahmedadeltito.photoeditorsdk;
 
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -27,7 +26,7 @@ class MultiTouchListener implements OnTouchListener {
     private ImageView photoEditImageView;
     private RelativeLayout parentView;
 
-    private OnEditTextClickListener onEditTextClickListener;
+    private OnMultiTouchListener onMultiTouchListener;
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
 
     MultiTouchListener(View deleteView, RelativeLayout parentView,
@@ -55,7 +54,6 @@ class MultiTouchListener implements OnTouchListener {
         computeRenderOffset(view, info.pivotX, info.pivotY);
         adjustTranslation(view, info.deltaX, info.deltaY);
 
-        // Assume that scaling still maintains aspect ratio.
         float scale = view.getScaleX() * info.deltaScale;
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
         view.setScaleX(scale);
@@ -108,7 +106,6 @@ class MultiTouchListener implements OnTouchListener {
 
         switch (action & event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                Log.i("MotionEvent", "ACTION_DOWN");
                 mPrevX = event.getX();
                 mPrevY = event.getY();
                 mPrevRawX = event.getRawX();
@@ -134,7 +131,8 @@ class MultiTouchListener implements OnTouchListener {
             case MotionEvent.ACTION_UP:
                 mActivePointerId = INVALID_POINTER_ID;
                 if (isViewInBounds(deleteView, x, y)) {
-                    parentView.removeView(view);
+                    if (onMultiTouchListener != null)
+                        onMultiTouchListener.onRemoveViewListener(view);
                 } else if (!isViewInBounds(photoEditImageView, x, y)) {
                     view.animate().translationY(0).translationY(0);
                 }
@@ -144,8 +142,8 @@ class MultiTouchListener implements OnTouchListener {
                 float mCurrentCancelY = event.getRawY();
                 if (mCurrentCancelX == mPrevRawX || mCurrentCancelY == mPrevRawY) {
                     if (view instanceof TextView) {
-                        if (onEditTextClickListener != null) {
-                            onEditTextClickListener.onEditTextClickListener(
+                        if (onMultiTouchListener != null) {
+                            onMultiTouchListener.onEditTextClickListener(
                                     ((TextView) view).getText().toString(), ((TextView) view).getCurrentTextColor());
                         }
                         if (onPhotoEditorSDKListener != null) {
@@ -172,7 +170,7 @@ class MultiTouchListener implements OnTouchListener {
 
     private void firePhotoEditorSDKListener(View view, boolean isStart) {
         if (view instanceof TextView) {
-            if (onEditTextClickListener != null) {
+            if (onMultiTouchListener != null) {
                 if (onPhotoEditorSDKListener != null) {
                     if (isStart)
                         onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.TEXT);
@@ -187,7 +185,7 @@ class MultiTouchListener implements OnTouchListener {
                         onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.EMOJI);
                 }
             }
-        } else if (view instanceof ImageView) {
+        } else {
             if (onPhotoEditorSDKListener != null) {
                 if (isStart)
                     onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.IMAGE);
@@ -204,8 +202,8 @@ class MultiTouchListener implements OnTouchListener {
         return outRect.contains(x, y);
     }
 
-    void setOnEditTextClickListener(OnEditTextClickListener onEditTextClickListener) {
-        this.onEditTextClickListener = onEditTextClickListener;
+    public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
+        this.onMultiTouchListener = onMultiTouchListener;
     }
 
     private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -233,14 +231,12 @@ class MultiTouchListener implements OnTouchListener {
             info.pivotY = mPivotY;
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
-
             move(view, info);
             return false;
         }
     }
 
     private class TransformInfo {
-
         float deltaX;
         float deltaY;
         float deltaScale;
@@ -251,7 +247,8 @@ class MultiTouchListener implements OnTouchListener {
         float maximumScale;
     }
 
-    interface OnEditTextClickListener {
+    interface OnMultiTouchListener {
         void onEditTextClickListener(String text, int colorCode);
+        void onRemoveViewListener(View removedView);
     }
 }

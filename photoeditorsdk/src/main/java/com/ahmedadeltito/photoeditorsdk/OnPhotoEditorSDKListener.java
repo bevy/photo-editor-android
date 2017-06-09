@@ -8,9 +8,9 @@ public interface OnPhotoEditorSDKListener {
 
     void onEditTextChangeListener(String text, int colorCode);
 
-    void onAddViewListener(ViewType viewType);
+    void onAddViewListener(ViewType viewType, int numberOfAddedViews);
 
-    void onRemoveViewListener(ViewType viewType);
+    void onRemoveViewListener(int numberOfAddedViews);
 
     void onStartViewChangeListener(ViewType viewType);
 

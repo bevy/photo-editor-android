@@ -29,7 +29,9 @@ import android.widget.TextView;
 
 import com.ahmedadeltito.photoeditor.widget.SlidingUpPanelLayout;
 import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
+import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
+import com.ahmedadeltito.photoeditorsdk.ViewType;
 import com.viewpagerindicator.PageIndicator;
 
 import java.text.SimpleDateFormat;
@@ -37,12 +39,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PhotoEditorActivity extends AppCompatActivity implements View.OnClickListener {
+public class PhotoEditorActivity extends AppCompatActivity implements View.OnClickListener, OnPhotoEditorSDKListener {
 
     private final String TAG = "PhotoEditorActivity";
     private RelativeLayout parentImageRelativeLayout;
     private RecyclerView drawingViewColorPickerRecyclerView;
-    private TextView doneDrawingTextView;
+    private TextView undoTextView, undoTextTextView, doneDrawingTextView, eraseDrawingTextView;
     private SlidingUpPanelLayout mLayout;
     private Typeface emojiFont;
     private View topShadow;
@@ -78,7 +80,10 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         TextView addImageEmojiTextView = (TextView) findViewById(R.id.add_image_emoji_tv);
         TextView saveTextView = (TextView) findViewById(R.id.save_tv);
         TextView saveTextTextView = (TextView) findViewById(R.id.save_text_tv);
+        undoTextView = (TextView) findViewById(R.id.undo_tv);
+        undoTextTextView = (TextView) findViewById(R.id.undo_text_tv);
         doneDrawingTextView = (TextView) findViewById(R.id.done_drawing_tv);
+        eraseDrawingTextView = (TextView) findViewById(R.id.erase_drawing_tv);
         TextView clearAllTextView = (TextView) findViewById(R.id.clear_all_tv);
         TextView clearAllTextTextView = (TextView) findViewById(R.id.clear_all_text_tv);
         TextView goToNextTextView = (TextView) findViewById(R.id.go_to_next_screen_tv);
@@ -99,6 +104,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         addPencil.setTypeface(newFont);
         addImageEmojiTextView.setTypeface(newFont);
         saveTextView.setTypeface(newFont);
+        undoTextView.setTypeface(newFont);
         clearAllTextView.setTypeface(newFont);
         goToNextTextView.setTypeface(newFont);
         deleteTextView.setTypeface(newFont);
@@ -118,6 +124,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
                 .deleteView(deleteRelativeLayout)
                 .brushDrawingView(brushDrawingView)
                 .buildPhotoEditorSDK();
+        photoEditorSDK.setOnPhotoEditorSDKListener(this);
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -140,40 +147,16 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        mLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                Log.i(TAG, "onPanelSlide, offset " + slideOffset);
-            }
-
-            @Override
-            public void onPanelExpanded(View panel) {
-                Log.i(TAG, "onPanelExpanded");
-            }
-
-            @Override
-            public void onPanelCollapsed(View panel) {
-                Log.i(TAG, "onPanelCollapsed");
-            }
-
-            @Override
-            public void onPanelAnchored(View panel) {
-                Log.i(TAG, "onPanelAnchored");
-            }
-
-            @Override
-            public void onPanelHidden(View panel) {
-                Log.i(TAG, "onPanelHidden");
-            }
-        });
-
         closeTextView.setOnClickListener(this);
         addImageEmojiTextView.setOnClickListener(this);
         addTextView.setOnClickListener(this);
         addPencil.setOnClickListener(this);
         saveTextView.setOnClickListener(this);
         saveTextTextView.setOnClickListener(this);
+        undoTextView.setOnClickListener(this);
+        undoTextTextView.setOnClickListener(this);
         doneDrawingTextView.setOnClickListener(this);
+        eraseDrawingTextView.setOnClickListener(this);
         clearAllTextView.setOnClickListener(this);
         clearAllTextTextView.setOnClickListener(this);
         goToNextTextView.setOnClickListener(this);
@@ -215,10 +198,14 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
     public void addEmoji(String emojiName) {
         photoEditorSDK.addEmoji(emojiName, emojiFont);
+        if (mLayout != null)
+            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
     public void addImage(Bitmap image) {
         photoEditorSDK.addImage(image);
+        if (mLayout != null)
+            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
     private void addText(String text, int colorCodeTextView) {
@@ -227,6 +214,14 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
     private void clearAllViews() {
         photoEditorSDK.clearAllViews();
+    }
+
+    private void undoViews() {
+        photoEditorSDK.viewUndo();
+    }
+
+    private void eraseDrawing() {
+        photoEditorSDK.brushEraser();
     }
 
     private void openAddTextPopupWindow(String text, int colorCode) {
@@ -285,6 +280,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             updateView(View.GONE);
             drawingViewColorPickerRecyclerView.setVisibility(View.VISIBLE);
             doneDrawingTextView.setVisibility(View.VISIBLE);
+            eraseDrawingTextView.setVisibility(View.VISIBLE);
             LinearLayoutManager layoutManager = new LinearLayoutManager(PhotoEditorActivity.this, LinearLayoutManager.HORIZONTAL, false);
             drawingViewColorPickerRecyclerView.setLayoutManager(layoutManager);
             drawingViewColorPickerRecyclerView.setHasFixedSize(true);
@@ -300,6 +296,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             updateView(View.VISIBLE);
             drawingViewColorPickerRecyclerView.setVisibility(View.GONE);
             doneDrawingTextView.setVisibility(View.GONE);
+            eraseDrawingTextView.setVisibility(View.GONE);
         }
     }
 
@@ -341,8 +338,84 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             returnBackWithSavedImage();
         } else if (v.getId() == R.id.clear_all_tv || v.getId() == R.id.clear_all_text_tv) {
             clearAllViews();
+        } else if (v.getId() == R.id.undo_text_tv || v.getId() == R.id.undo_tv) {
+            undoViews();
+        } else if (v.getId() == R.id.erase_drawing_tv) {
+            eraseDrawing();
         } else if (v.getId() == R.id.go_to_next_screen_tv) {
             returnBackWithSavedImage();
+        }
+    }
+
+    @Override
+    public void onEditTextChangeListener(String text, int colorCode) {
+        openAddTextPopupWindow(text, colorCode);
+    }
+
+    @Override
+    public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
+        if (numberOfAddedViews > 0) {
+            undoTextView.setVisibility(View.VISIBLE);
+            undoTextTextView.setVisibility(View.VISIBLE);
+        }
+        switch (viewType) {
+            case BRUSH_DRAWING:
+                Log.i("BRUSH_DRAWING", "onAddViewListener");
+                break;
+            case EMOJI:
+                Log.i("EMOJI", "onAddViewListener");
+                break;
+            case IMAGE:
+                Log.i("IMAGE", "onAddViewListener");
+                break;
+            case TEXT:
+                Log.i("TEXT", "onAddViewListener");
+                break;
+        }
+    }
+
+    @Override
+    public void onRemoveViewListener(int numberOfAddedViews) {
+        Log.i(TAG, "onRemoveViewListener");
+        if (numberOfAddedViews == 0) {
+            undoTextView.setVisibility(View.GONE);
+            undoTextTextView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onStartViewChangeListener(ViewType viewType) {
+        switch (viewType) {
+            case BRUSH_DRAWING:
+                Log.i("BRUSH_DRAWING", "onStartViewChangeListener");
+                break;
+            case EMOJI:
+                Log.i("EMOJI", "onStartViewChangeListener");
+                break;
+            case IMAGE:
+                Log.i("IMAGE", "onStartViewChangeListener");
+                break;
+            case TEXT:
+                Log.i("TEXT", "onStartViewChangeListener");
+                break;
+        }
+    }
+
+    @Override
+    public void onStopViewChangeListener(ViewType viewType) {
+        switch (viewType) {
+            case BRUSH_DRAWING:
+                Log.i("BRUSH_DRAWING", "onStopViewChangeListener");
+                break;
+            case EMOJI:
+                Log.i("EMOJI", "onStopViewChangeListener");
+                break;
+            case IMAGE:
+                Log.i("IMAGE", "onStopViewChangeListener");
+                break;
+            case TEXT:
+                Log.i("TEXT", "onStopViewChangeListener");
+                break;
         }
     }
 

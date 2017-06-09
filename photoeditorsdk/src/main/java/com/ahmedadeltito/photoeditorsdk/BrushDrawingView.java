@@ -14,26 +14,22 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
-
 /**
  * Created by Ahmed Adel on 5/8/17.
  */
 
 public class BrushDrawingView extends View {
 
-    private ArrayList<Path> paths = new ArrayList<>();
+    private float brushSize = 10;
+    private float brushEraserSize = 100;
 
-    private Path brushDrawPath;
-    private Paint brushDrawPaint;
+    private Path drawPath;
+    private Paint drawPaint;
     private Paint canvasPaint;
 
-    private Canvas brushDrawCanvas;
+    private Canvas drawCanvas;
     private Bitmap canvasBitmap;
     private boolean brushDrawMode;
-
-    private float brushSize = 10;
-    private float brushEraserSize = 10;
 
     private OnPhotoEditorSDKListener onPhotoEditorSDKListener;
 
@@ -52,47 +48,42 @@ public class BrushDrawingView extends View {
     }
 
     void setupBrushDrawing() {
-        brushDrawPath = new Path();
+        drawPath = new Path();
+        drawPaint = new Paint();
+        drawPaint.setAntiAlias(true);
+        drawPaint.setDither(true);
+        drawPaint.setColor(Color.BLACK);
+        drawPaint.setStyle(Paint.Style.STROKE);
+        drawPaint.setStrokeJoin(Paint.Join.ROUND);
+        drawPaint.setStrokeCap(Paint.Cap.ROUND);
+        drawPaint.setStrokeWidth(brushSize);
+        drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-        brushDrawPaint = new Paint();
-        brushDrawPaint.setAntiAlias(true);
-        brushDrawPaint.setDither(true);
-        brushDrawPaint.setColor(Color.BLACK);
-        brushDrawPaint.setStyle(Paint.Style.STROKE);
-        brushDrawPaint.setStrokeJoin(Paint.Join.ROUND);
-        brushDrawPaint.setStrokeCap(Paint.Cap.ROUND);
-        brushDrawPaint.setStrokeWidth(brushSize);
-        brushDrawMode = true;
-        brushDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SCREEN));
         this.setVisibility(View.GONE);
     }
 
     private void refreshBrushDrawing() {
         brushDrawMode = true;
-        brushDrawPaint.setAntiAlias(true);
-        brushDrawPaint.setDither(true);
-        brushDrawPaint.setStyle(Paint.Style.STROKE);
-        brushDrawPaint.setStrokeJoin(Paint.Join.ROUND);
-        brushDrawPaint.setStrokeCap(Paint.Cap.ROUND);
-        brushDrawPaint.setStrokeWidth(brushSize);
-        brushDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SCREEN));
+        drawPaint.setAntiAlias(true);
+        drawPaint.setDither(true);
+        drawPaint.setStyle(Paint.Style.STROKE);
+        drawPaint.setStrokeJoin(Paint.Join.ROUND);
+        drawPaint.setStrokeCap(Paint.Cap.ROUND);
+        drawPaint.setStrokeWidth(brushSize);
+        drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
     }
 
     void brushEraser() {
-        brushDrawMode = false;
-        brushDrawPaint.setColor(Color.parseColor("#f4f4f4"));
-        brushDrawPaint.setStyle(Paint.Style.STROKE);
-        brushDrawPaint.setStrokeWidth(brushEraserSize);
-        brushDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        drawPaint.setStrokeWidth(brushEraserSize);
+        drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
     }
 
     void setBrushDrawingMode(boolean brushDrawMode) {
         this.brushDrawMode = brushDrawMode;
-        if (brushDrawMode)
+        if (brushDrawMode) {
             this.setVisibility(View.VISIBLE);
-        else
-            this.setVisibility(View.GONE);
-
+            refreshBrushDrawing();
+        }
     }
 
     void setBrushSize(float size) {
@@ -101,31 +92,28 @@ public class BrushDrawingView extends View {
     }
 
     void setBrushColor(@ColorInt int color) {
-        brushDrawPaint.setColor(color);
+        drawPaint.setColor(color);
+        refreshBrushDrawing();
+    }
+
+    public void setBrushEraserSize(float brushEraserSize) {
+        this.brushEraserSize = brushEraserSize;
     }
 
     float getEraserSize() {
         return brushEraserSize;
     }
 
-    float getPenSize() {
+    float getBrushSize() {
         return brushSize;
     }
 
     int getBrushColor() {
-        return brushDrawPaint.getColor();
-    }
-
-    void brushUndo() {
-        if (paths.size() > 0) {
-            paths.remove(paths.size() - 1);
-            invalidate();
-        }
+        return drawPaint.getColor();
     }
 
     void clearAll() {
-        paths.clear();
-        brushDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
     }
 
@@ -137,13 +125,13 @@ public class BrushDrawingView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        brushDrawCanvas = new Canvas(canvasBitmap);
+        drawCanvas = new Canvas(canvasBitmap);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-        canvas.drawPath(brushDrawPath, brushDrawPaint);
+        canvas.drawPath(drawPath, drawPaint);
     }
 
     @Override
@@ -153,17 +141,16 @@ public class BrushDrawingView extends View {
             float touchY = event.getY();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    brushDrawPath.moveTo(touchX, touchY);
+                    drawPath.moveTo(touchX, touchY);
                     if (onPhotoEditorSDKListener != null)
                         onPhotoEditorSDKListener.onStartViewChangeListener(ViewType.BRUSH_DRAWING);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    brushDrawPath.lineTo(touchX, touchY);
+                    drawPath.lineTo(touchX, touchY);
                     break;
                 case MotionEvent.ACTION_UP:
-                    brushDrawCanvas.drawPath(brushDrawPath, brushDrawPaint);
-                    paths.add(brushDrawPath);
-                    brushDrawPath.reset();
+                    drawCanvas.drawPath(drawPath, drawPaint);
+                    drawPath.reset();
                     if (onPhotoEditorSDKListener != null)
                         onPhotoEditorSDKListener.onStopViewChangeListener(ViewType.BRUSH_DRAWING);
                     break;
