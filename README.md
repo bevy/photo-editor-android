@@ -56,12 +56,13 @@ photoEditorSDK.setBrushDrawingMode(brushDrawingMode);
 // brushDrawingMode is false by default, true if you want to draw on the image view
 ```
 
-6. To change the **Color** and **Size** of the drawing view and the **Size** of the **Eraser** view:
+6. To change the **Color** and **Size** of the drawing view and the **Size** and the **Color** of the **Eraser** view:
 ```java
 photoEditorSDK.setBrushSize(size);
 photoEditorSDK.setBrushColor(colorCode);
 photoEditorSDK.brushEraser();
 photoEditorSDK.setBrushEraserSize(brushEraserSize);
+photoEditorSDK.setBrushEraserColor(color);
 ```
 
 7. To **Save** the image after editing:
