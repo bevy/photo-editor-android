@@ -112,7 +112,8 @@ photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
 ```
 -----------------------------------------------------------------------------------------------------
 
-# Future Work:
+# Future Work
+
 **Will add this library in marven and jcenter very soon. To integrate PhotoEditorSDK to your project all what you need to clone the project and add PhotoEditorSDK module to your project.**
 
 -----------------------------------------------------------------------------------------------------
