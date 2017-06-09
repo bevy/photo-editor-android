@@ -89,25 +89,25 @@ photoEditorSDK.clearBrushAllViews();
 ```java
 photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
     @Override
-	public void onEditTextChangeListener(String text, int colorCode) {
+    public void onEditTextChangeListener(String text, int colorCode) {
     
-	}
-	@Override
+    }
+    @Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-	
-    }
-    @Override
-	public void onRemoveViewListener(int numberOfAddedViews) {
     
     }
     @Override
-	public void onStartViewChangeListener(ViewType viewType) {
+    public void onRemoveViewListener(int numberOfAddedViews) {
     
-	}
+    }
     @Override
-	public void onStopViewChangeListener(ViewType viewType) {
+    public void onStartViewChangeListener(ViewType viewType) {
     
-	}
+    }
+    @Override
+    public void onStopViewChangeListener(ViewType viewType) {
+    
+    }
 });
 ```
 -----------------------------------------------------------------------------------------------------
