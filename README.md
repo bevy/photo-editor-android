@@ -23,16 +23,16 @@ Photo Editor SDK that contains a lot of features to edit, scale, rotate and draw
 1. First of all you have to get instance of PhotoEditorSDK to initialize it and start calling the desired functions.
 ```java
 photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(PhotoEditorActivity.this)
-.parentView(parentImageRelativeLayout)
 //add parent image view
-.childView(photoEditImageView)
+.parentView(parentImageRelativeLayout)
 //add the desired image view
-.deleteView(deleteRelativeLayout)
+.childView(photoEditImageView)
 //add the deleted view that will appear during the movement of the views
-.brushDrawingView(brushDrawingView)
+.deleteView(deleteRelativeLayout)
 // add the brush drawing view that is responsible for drawing on the image view
-.buildPhotoEditorSDK();
+.brushDrawingView(brushDrawingView)
 // build photo editor sdk
+.buildPhotoEditorSDK();
 ```
 
 2. To add **Text** on the image:
