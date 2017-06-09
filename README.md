@@ -90,7 +90,7 @@ photoEditorSDK.clearBrushAllViews();
 photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
     @Override
 	public void onEditTextChangeListener(String text, int colorCode) {
-            
+    
 	}
 	@Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
@@ -98,11 +98,11 @@ photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
     }
     @Override
 	public void onRemoveViewListener(int numberOfAddedViews) {
-            
-	}
+    
+    }
     @Override
 	public void onStartViewChangeListener(ViewType viewType) {
-            
+    
 	}
     @Override
 	public void onStopViewChangeListener(ViewType viewType) {
