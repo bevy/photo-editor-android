@@ -122,7 +122,7 @@ photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
 
 -----------------------------------------------------------------------------------------------------
 
-# Future Work
+# To Contribute
 
 1. Fork this repository.
 2. Make your edits.
