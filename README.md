@@ -2,7 +2,7 @@
 
 ![alt tag](https://s18.postimg.org/xza5yw53d/photoeditorsdk.png)
 
-Photo Editor SDK that contains a lot of features to edit, scale, rotate and draw on images like Instagram stories.
+Photo Editor SDK contains a lot of features like edit, scale, rotate and draw on images like Instagram stories.
 
 -----------------------------------------------------------------------------------------------------
 
