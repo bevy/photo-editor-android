@@ -1,127 +1,45 @@
 # PhotoEditorSDK
+is an android image editing SDK with simple, easy support for image manipulation.
 
-![alt tag](https://s18.postimg.org/xza5yw53d/photoeditorsdk.png)
+## Features
+- Adding Images.
+- Adding Stickers.
+- Adding Text with option to change its Color.
+- Drawing on image with option to change its Color, its Size and Erasing.
+- Scaling and Rotating views.
+- Deleting views.
+- Saving photo after editing.
+- Undo after adding views.
 
-Photo Editor SDK contains a lot of features like edit, scale, rotate and draw on images like Instagram stories.
+- Effects
+Todo.
 
------------------------------------------------------------------------------------------------------
+- Transforms
+  - Flip
+  - Rotate
+  - Resize
 
-# Application Features
-1. Adding **Images**.
-2. Adding **Stickers**.
-3. Adding **Text** with option to change its **Color**.
-4. **Drawing** on image with option to change its **Color**, its **Size** and **Erasing**.
-5. **Scaling** and **Rotating** views.
-6. **Deleting** views.
-7. **Saving** photo after editing.
-8. **Undo** after adding views.
+## Benefits
+- Hassle free coding
+- Increase efficiency
+- Easy image editing
 
------------------------------------------------------------------------------------------------------
+## Requirements
 
-# User Documentation :
+## Installation
 
-1. First of all you have to get instance of PhotoEditorSDK to initialize it and start calling the desired functions.
-```java
-photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(PhotoEditorActivity.this)
-//add the parent image view
-.parentView(parentImageRelativeLayout)
-//add the desired image view
-.childView(photoEditImageView)
-//add the deleted view that will appear during the movement of the views
-.deleteView(deleteRelativeLayout)
-// add the brush drawing view that is responsible for drawing on the image view
-.brushDrawingView(brushDrawingView)
-// build photo editor sdk
-.buildPhotoEditorSDK();
-```
+## Usage
 
-2. To add **Text** on the image:
-```java
-photoEditorSDK.addText(String text, int colorCodeTextView);
-```
+## Contributing
 
-3. To add **Image** or **Stickers**:
-```java
-photoEditorSDK.addImage(Bitmap desiredImage);
-```
+We welcome contributions from other developers to help us make the SDK even better.
+Before you contribute there are a number of things that you should know please see [CONTRIBUTING.md](https://github.com/eventtus/photo-editor-android/blob/master/CONTRIBUTING.md) for details.
 
-4. To add **Emoji**:
-```java
-photoEditorSDK.addEmoji(String emojiName, Typeface emojiFont);
-```
+## Credits
 
-5. To **Draw** on the image:
-```java
-photoEditorSDK.setBrushDrawingMode(boolean brushDrawingMode);
-// brushDrawingMode is false by default, true if you want to draw on the image view
-```
+PhotoEditorSDK was originally written by [Ahmed Adel](https://github.com/ahmed-adel-said).
+Project is maintained and funded by [![Eventtus](http://assets.eventtus.com/logos/eventtus/standard.png)](http://eventtus.com)
 
-6. To change the **Color** and **Size** of the drawing view.
-```java
-photoEditorSDK.setBrushSize(int size);
-photoEditorSDK.setBrushColor(int colorCode);
-```
+## License
 
-7. To apply **The Eraser** option, change its **Size** and the **Color** of it:
-```java
-photoEditorSDK.brushEraser();
-photoEditorSDK.setBrushEraserSize(float brushEraserSize);
-photoEditorSDK.setBrushEraserColor(int color);
-```
-
-8. To **Save** the image after editing:
-```java
-photoEditorSDK.saveImage(folderName, imageName);
-```
-
-9. To **Undo** the added **Views (Image or Text)**:
-```java
-photoEditorSDK.viewUndo();
-```
-
-10. To **Clear All** the added **Views (Image or Text)**:
-```java
-photoEditorSDK.clearAllViews();
-```
-
-11. To **Clear All** the added **Drawing Views**:
-```java
-photoEditorSDK.clearBrushAllViews();
-```
-
-12. To listen on **Added Views**, **Edit the added Text Views**, **Added and Removed Views** and **Start and Stop Moving Views**. You can implement:
-```java
-photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
-    @Override
-    public void onEditTextChangeListener(String text, int colorCode) {
-    
-    }
-    @Override
-    public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-    
-    }
-    @Override
-    public void onRemoveViewListener(int numberOfAddedViews) {
-    
-    }
-    @Override
-    public void onStartViewChangeListener(ViewType viewType) {
-    
-    }
-    @Override
-    public void onStopViewChangeListener(ViewType viewType) {
-    
-    }
-});
-```
------------------------------------------------------------------------------------------------------
-
-# Future Work
-
-**Will add this library in maven and jcenter very soon. To integrate PhotoEditorSDK to your project all what you need is to clone the project and import PhotoEditorSDK module to your project.**
-
------------------------------------------------------------------------------------------------------
-
-# License
-
-**Open Source, waiting your contributions !**
+Copyright (c) 2017 Eventtus, PhotoEditorSDK is released under the MIT license.
