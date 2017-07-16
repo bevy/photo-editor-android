@@ -20,8 +20,10 @@ class MultiTouchListener implements OnTouchListener {
     private float mPrevX, mPrevY, mPrevRawX, mPrevRawY;
     private ScaleGestureDetector mScaleGestureDetector;
 
-    private int[] location = new int[2];
+    private int[] imageViewLocation = new int[2];
     private Rect outRect;
+    private int[] stickerViewLocation = new int[2];
+    private Rect stickerRect = new Rect();
     private View deleteView;
     private ImageView photoEditImageView;
     private RelativeLayout parentView;
@@ -116,15 +118,23 @@ class MultiTouchListener implements OnTouchListener {
                 firePhotoEditorSDKListener(view, true);
                 break;
             case MotionEvent.ACTION_MOVE:
+                view.getLocationOnScreen(stickerViewLocation);
+                int sx = stickerViewLocation[0];
+                int sy = stickerViewLocation[1];
+                stickerRect.set(sx + (view.getWidth() / 2)
+                      , sy + (view.getHeight() / 2)
+                      , sx + (view.getWidth() / 2)
+                      , sy + (view.getHeight() / 2));
+
                 int pointerIndexMove = event.findPointerIndex(mActivePointerId);
-                if (pointerIndexMove != -1) {
-                    float currX = event.getX(pointerIndexMove);
-                    float currY = event.getY(pointerIndexMove);
-                    if (!mScaleGestureDetector.isInProgress()) {
-                        adjustTranslation(view, currX - mPrevX, currY - mPrevY);
-                    }
-                }
-                break;
+                  if (pointerIndexMove != -1) {
+                      float currX = event.getX(pointerIndexMove);
+                      float currY = event.getY(pointerIndexMove);
+                      if (!mScaleGestureDetector.isInProgress()) {
+                          adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                      }
+                  }
+                  break;
             case MotionEvent.ACTION_CANCEL:
                 mActivePointerId = INVALID_POINTER_ID;
                 break;
@@ -133,8 +143,8 @@ class MultiTouchListener implements OnTouchListener {
                 if (isViewInBounds(deleteView, x, y)) {
                     if (onMultiTouchListener != null)
                         onMultiTouchListener.onRemoveViewListener(view);
-                } else if (!isViewInBounds(photoEditImageView, x, y)) {
-                    view.animate().translationY(0).translationY(0);
+                } else if (!isViewInBounds(photoEditImageView)) {
+                    view.animate().translationX(0).translationY(0);
                 }
                 deleteView.setVisibility(View.GONE);
                 firePhotoEditorSDKListener(view, false);
@@ -197,9 +207,18 @@ class MultiTouchListener implements OnTouchListener {
 
     private boolean isViewInBounds(View view, int x, int y) {
         view.getDrawingRect(outRect);
-        view.getLocationOnScreen(location);
-        outRect.offset(location[0], location[1]);
+        view.getLocationOnScreen(imageViewLocation);
+        outRect.offset(imageViewLocation[0], imageViewLocation[1]);
         return outRect.contains(x, y);
+    }
+
+    private boolean isViewInBounds(View view) {
+        outRect = new Rect();
+        view.getDrawingRect(outRect);
+        view.getLocationOnScreen(imageViewLocation);
+        outRect.offset(imageViewLocation[0], imageViewLocation[1]);
+
+      return outRect.contains(stickerRect);
     }
 
     public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
