@@ -2,7 +2,7 @@
 
 ![alt tag](https://s18.postimg.org/xza5yw53d/photoeditorsdk.png)
 
-is an android image editing SDK with simple, easy support for image manipulation.
+It is an android image editing SDK with simple, easy support for image manipulation.
 
 -----------------------------------------------------------------------------------------------------
 
