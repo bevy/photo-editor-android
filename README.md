@@ -173,7 +173,9 @@ Before you contribute there are a number of things that you should know please s
 ## Credits
 
 PhotoEditorSDK was originally written by [Ahmed Adel](https://github.com/ahmed-adel-said).
-Project is maintained and funded by [![Eventtus](http://assets.eventtus.com/logos/eventtus/standard.png)](http://eventtus.com)
+Project is maintained and funded by 
+
+[![Eventtus](http://assets.eventtus.com/logos/eventtus/standard.png)](http://eventtus.com)
 
 ## License
 
