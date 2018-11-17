@@ -2,19 +2,71 @@
 
 ![alt tag](https://s18.postimg.org/xza5yw53d/photoeditorsdk.png)
 
-Photo Editor SDK contains a lot of features like edit, scale, rotate and draw on images like Instagram stories.
+It is an android image editing SDK with simple, easy support for image manipulation.
 
 -----------------------------------------------------------------------------------------------------
 
-# Application Features
-1. Adding **Images**.
-2. Adding **Stickers**.
-3. Adding **Text** with option to change its **Color**.
-4. **Drawing** on image with option to change its **Color**, its **Size** and **Erasing**.
-5. **Scaling** and **Rotating** views.
-6. **Deleting** views.
-7. **Saving** photo after editing.
-8. **Undo** after adding views.
+## Features
+- Adding Images.
+- Adding Stickers.
+- Adding Text with option to change its Color.
+- Drawing on image with option to change its Color, its Size and Erasing.
+- Scaling and Rotating views.
+- Deleting views.
+- Saving photo after editing.
+- Undo after adding views.
+- Transforms
+  - Flip
+  - Rotate
+  - Resize
+
+-----------------------------------------------------------------------------------------------------
+
+## Benefits
+- Hassle free coding
+- Increase efficiency
+- Easy image editing
+
+-----------------------------------------------------------------------------------------------------
+
+## Installation
+
+### For Gradle : ###
+Step 1 : Add it in your root build.gradle at the end of repositories
+```java
+allprojects {
+  repositories {
+   ...
+   maven { url 'https://jitpack.io' }
+  }
+}
+```
+Step 2 : Add the dependency
+```java
+dependencies {
+         compile 'com.github.eventtus:photo-editor-android:v1.0'
+ }
+ ```
+
+### For Maven : ###
+
+Step 1 : Add it in your root build.gradle at the end of repositories
+```java
+<repositories>
+  <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+```
+Step 2 : Add the dependency
+```java
+<dependency>
+     <groupId>com.github.eventtus</groupId>
+     <artifactId>photo-editor-android</artifactId>
+     <version>v1.0</version>
+</dependency>
+```
 
 -----------------------------------------------------------------------------------------------------
 
@@ -23,133 +75,108 @@ Photo Editor SDK contains a lot of features like edit, scale, rotate and draw on
 1. First of all you have to get instance of PhotoEditorSDK to initialize it and start calling the desired functions.
 ```java
 photoEditorSDK = new PhotoEditorSDK.PhotoEditorSDKBuilder(PhotoEditorActivity.this)
-//add the parent image view
 .parentView(parentImageRelativeLayout)
-//add the desired image view
+//add parent image view
 .childView(photoEditImageView)
-//add the deleted view that will appear during the movement of the views
+//add the desired image view
 .deleteView(deleteRelativeLayout)
-// add the brush drawing view that is responsible for drawing on the image view
+//add the deleted view that will appear during the movement of the views
 .brushDrawingView(brushDrawingView)
-// build photo editor sdk
+// add the brush drawing view that is responsible for drawing on the image view
 .buildPhotoEditorSDK();
+// build photo editor sdk
 ```
 
 2. To add **Text** on the image:
 ```java
-photoEditorSDK.addText(String text, int colorCodeTextView);
+photoEditorSDK.addText(text, colorCodeTextView);
 ```
 
 3. To add **Image** or **Stickers**:
 ```java
-photoEditorSDK.addImage(Bitmap desiredImage);
+photoEditorSDK.addImage(image);
 ```
 
 4. To add **Emoji**:
 ```java
-photoEditorSDK.addEmoji(String emojiName, Typeface emojiFont);
+photoEditorSDK.addEmoji(emojiName, emojiFont);
 ```
 
 5. To **Draw** on the image:
 ```java
-photoEditorSDK.setBrushDrawingMode(boolean brushDrawingMode);
+photoEditorSDK.setBrushDrawingMode(brushDrawingMode);
 // brushDrawingMode is false by default, true if you want to draw on the image view
 ```
 
-6. To change the **Color** and **Size** of the drawing view.
+6. To change the **Color** and **Size** of the drawing view and the **Size** and the **Color** of the **Eraser** view:
 ```java
-photoEditorSDK.setBrushSize(int size);
-photoEditorSDK.setBrushColor(int colorCode);
-```
-
-7. To apply **The Eraser** option, change its **Size** and the **Color** of it:
-```java
+photoEditorSDK.setBrushSize(size);
+photoEditorSDK.setBrushColor(colorCode);
 photoEditorSDK.brushEraser();
-photoEditorSDK.setBrushEraserSize(float brushEraserSize);
-photoEditorSDK.setBrushEraserColor(int color);
+photoEditorSDK.setBrushEraserSize(brushEraserSize);
+photoEditorSDK.setBrushEraserColor(color);
 ```
 
-8. To **Save** the image after editing:
+7. To **Save** the image after editing:
 ```java
 photoEditorSDK.saveImage(folderName, imageName);
 ```
 
-9. To **Undo** the added **Views (Image or Text)**:
+8. To **Undo** the added **Views (Image or Text)**:
 ```java
 photoEditorSDK.viewUndo();
 ```
 
-10. To **Clear All** the added **Views (Image or Text)**:
+9. To **Clear All** the added **Views (Image or Text)**:
 ```java
 photoEditorSDK.clearAllViews();
 ```
 
-11. To **Clear All** the added **Drawing Views**:
+10. To **Clear All** the added **Drawing Views**:
 ```java
 photoEditorSDK.clearBrushAllViews();
 ```
 
-12. To listen on **Added Views**, **Edit the added Text Views**, **Added and Removed Views** and **Start and Stop Moving Views**. You can implement:
+11. To listen on **Added Views**, **Edit the added Text Views**, **Added and Removed Views** and **Start and Stop Moving Views**. You can implement:
 ```java
 photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
     @Override
-    public void onEditTextChangeListener(String text, int colorCode) {
-    
-    }
-    @Override
+	public void onEditTextChangeListener(String text, int colorCode) {
+
+	}
+	@Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-    
+
     }
     @Override
-    public void onRemoveViewListener(int numberOfAddedViews) {
-    
-    }
+	public void onRemoveViewListener(int numberOfAddedViews) {
+
+	}
     @Override
-    public void onStartViewChangeListener(ViewType viewType) {
-    
-    }
+	public void onStartViewChangeListener(ViewType viewType) {
+
+	}
     @Override
-    public void onStopViewChangeListener(ViewType viewType) {
-    
-    }
+	public void onStopViewChangeListener(ViewType viewType) {
+
+	}
 });
 ```
------------------------------------------------------------------------------------------------------
-
-# Future Work
-
-**Will add this library in maven and jcenter very soon. To integrate PhotoEditorSDK to your project all what you need is to clone the project and import PhotoEditorSDK module to your project.**
 
 -----------------------------------------------------------------------------------------------------
 
-# To Contribute
+## Contributing
 
-1. Fork this repository.
-2. Make your edits.
-3. TEST THEM!
-4. Create a pull request
+We welcome contributions from other developers to help us make the SDK even better.
+Before you contribute there are a number of things that you should know please see [CONTRIBUTING.md](https://github.com/eventtus/photo-editor-android/blob/master/CONTRIBUTING.md) for details.
 
------------------------------------------------------------------------------------------------------
+## Credits
 
-# License
+PhotoEditorSDK was originally written by [Ahmed Adel](https://github.com/ahmed-adel-said).
+Project is maintained and funded by
 
-Copyright (c) 2017 Ahmed Adel
+[![Eventtus](http://assets.eventtus.com/logos/eventtus/standard.png)](http://eventtus.com)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+## License
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
+Copyright (c) 2017 Eventtus, PhotoEditorSDK is released under the MIT license.
