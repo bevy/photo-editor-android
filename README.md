@@ -19,7 +19,6 @@ It is an android image editing SDK with simple, easy support for image manipulat
   - Flip
   - Rotate
   - Resize
-
 -----------------------------------------------------------------------------------------------------
 
 ## Benefits
@@ -158,7 +157,7 @@ photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
 	}
     @Override
 	public void onStopViewChangeListener(ViewType viewType) {
-
+  
 	}
 });
 ```
