@@ -19,7 +19,6 @@ It is an android image editing SDK with simple, easy support for image manipulat
   - Flip
   - Rotate
   - Resize
-  
 -----------------------------------------------------------------------------------------------------
 
 ## Benefits
@@ -142,23 +141,23 @@ photoEditorSDK.clearBrushAllViews();
 photoEditorSDK.setOnPhotoEditorSDKListener(new OnPhotoEditorSDKListener() {
     @Override
 	public void onEditTextChangeListener(String text, int colorCode) {
-            
+
 	}
 	@Override
     public void onAddViewListener(ViewType viewType, int numberOfAddedViews) {
-	
+
     }
     @Override
 	public void onRemoveViewListener(int numberOfAddedViews) {
-            
+
 	}
     @Override
 	public void onStartViewChangeListener(ViewType viewType) {
-            
+
 	}
     @Override
 	public void onStopViewChangeListener(ViewType viewType) {
-    
+  
 	}
 });
 ```
@@ -173,7 +172,7 @@ Before you contribute there are a number of things that you should know please s
 ## Credits
 
 PhotoEditorSDK was originally written by [Ahmed Adel](https://github.com/ahmed-adel-said).
-Project is maintained and funded by 
+Project is maintained and funded by
 
 [![Eventtus](http://assets.eventtus.com/logos/eventtus/standard.png)](http://eventtus.com)
 
