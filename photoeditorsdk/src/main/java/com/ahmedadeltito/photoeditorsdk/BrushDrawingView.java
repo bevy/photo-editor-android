@@ -8,11 +8,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 
 /**
  * Created by Ahmed Adel on 5/8/17.
